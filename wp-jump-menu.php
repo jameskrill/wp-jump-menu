@@ -102,6 +102,8 @@ class WpJumpMenu
 			add_action('wp_print_styles', array( $this, 'wpjm_css'));
 		}
 
+    add_action( 'wp_ajax_wpjm_menu', array( $this, 'wpjm_menu' ));
+
 		// Options page settings form
 		add_action( 'admin_init', 'wpjm_admin_init' );
 
@@ -120,6 +122,9 @@ class WpJumpMenu
 		{
 			wp_register_script( $k, $v, array('jquery'), $this->version );
 		}
+
+    // we now always need this one
+    wp_enqueue_script( 'wpjm-jquery-functions' );
 
 
 		// register styles
@@ -178,7 +183,7 @@ class WpJumpMenu
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-widget' );
-		wp_enqueue_script( 'wpjm-jquery-functions' );
+//		wp_enqueue_script( 'wpjm-jquery-functions' );
 
 	}
 
@@ -388,38 +393,21 @@ class WpJumpMenu
 		{
 
 			//$html = '<span class="wpjm-logo-title">'.$this->options['title'].'</span>';
-			$html = $this->wpjm_page_dropdown();
-			$html .= "<script>
-			jQuery(document).ready(function($){";
-
-			if ( isset( $this->options['showID']) && $this->options['showID'] == "true" ) {
-				if ( isset( $this->options['useChosen'] ) && $this->options['useChosen'] == 'true') {
-					// $html .= "jQuery('#wp-pdd').on('chosen:showing_dropdown', function(){
-					// 	console.log('ready');
-					// 	console.log(jQuery('#wp_pdd_chosen'));
-					// 	jQuery('#wp_pdd_chosen').find('[data-post-id]').each(function(i){
-					// 		jQuery(this).append(' <span class=\"post-id\" style=\"float: right;\">' + this.dataset.postId + '</span>');
-					// 	});
-					// });";
-				} else {
-					$html .= "jQuery('#wp-pdd').find('option').each(function(i){
-						if (this.dataset.postId) {
-							jQuery(this).append(' (' + this.dataset.postId + ') ');
-						}
-					});";
-				}
-			}
-
-			$html .= "jQuery('#wp-pdd').on('change',function() {
-						window.location = this.value;
-					})";
-			if ( isset( $this->options['useChosen'] ) && $this->options['useChosen'] == 'true') {
-				$html .= ".customChosen({position:'".esc_js($this->options['position'])."', search_contains: true})";
-			}
-				$html .= ";";
-			$html .= "});";
-
-			$html .= "</script>";
+			$html = '';
+      ob_start();
+      ?>
+      <script>
+        jQuery(document).ready(function() {
+          wpjm_init_html({
+            baseUrl: '<?=admin_url( 'admin-ajax.php' )?>',
+            useChosen: <?=isset( $this->options['useChosen'] ) && $this->options['useChosen'] == 'true'?>,
+            position: '<?=esc_js($this->options['position'])?>',
+            reloadText: '<?=__('Reload list')?>'
+          });
+        });
+      </script>
+<?php
+      $html .= ob_get_clean();
 
 			$wp_admin_bar->add_menu( array(
 				'id' 		 	=> 'wp-jump-menu',
@@ -432,6 +420,14 @@ class WpJumpMenu
 
 	  }
 	}
+
+  function wpjm_menu() {
+    echo $this->wpjm_page_dropdown();
+    if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+      wp_die();
+    else
+      die;
+  }
 
 
 	/*
