@@ -267,7 +267,7 @@ The branding options are only accessible when the position of the jump menu is s
 * Bug fixed: Order By was not working because the orderby value names had not been updated to exclude "post-".  Thanks Tim for the bug report.
 
 = 2.2.2 =
-* Minor fix to jqueryfunctions.js
+* Minor fix to wpjm-main.js
 
 = 2.2.1 =
 * Forgot to add default value for "number of posts" to show when updating or installing for the first time.  Post types had to be saved the first time to get the list to show up correctly.

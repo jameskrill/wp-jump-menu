@@ -102,7 +102,8 @@ class WpJumpMenu
 			add_action('wp_print_styles', array( $this, 'wpjm_css'));
 		}
 
-    add_action( 'wp_ajax_wpjm_menu', array( $this, 'wpjm_menu' ));
+		// Ajax menu
+        add_action( 'wp_ajax_wpjm_menu', array( $this, 'wpjm_menu' ));
 
 		// Options page settings form
 		add_action( 'admin_init', 'wpjm_admin_init' );
@@ -113,7 +114,8 @@ class WpJumpMenu
 
 		// register scripts
 		$scripts = array(
-			'wpjm-jquery-functions' => $this->dir . '/assets/js/jqueryfunctions.js',
+			'wpjm-admin-js' => $this->dir . '/assets/js/wpjm-admin.js',
+			'wpjm-main-js' => $this->dir . '/assets/js/wpjm-main.js',
 			'wpjm-jquery-colorpicker' => $this->dir . '/assets/js/colorpicker/js/colorpicker.js',
 			'chosenjs' => $this->dir . '/assets/js/chosen/custom.chosen.jquery.js'
 		);
@@ -123,8 +125,17 @@ class WpJumpMenu
 			wp_register_script( $k, $v, array('jquery'), $this->version );
 		}
 
-    // we now always need this one
-    wp_enqueue_script( 'wpjm-jquery-functions' );
+		// localize main script
+		global $post;
+		$post_id = isset($_GET['post']) ? $_GET['post'] : 0;
+		$post_id = isset($_GET['page_id']) ? $_GET['page_id'] : $post_id;
+		wp_localize_script( 'wpjm-main-js', 'wpjm_opt', array(
+			'baseUrl' => admin_url( 'admin-ajax.php' ),
+            'useChosen' => isset( $this->options['useChosen'] ) && $this->options['useChosen'] == 'true',
+			'position' => esc_js($this->options['position']),
+			'reloadText' => __('Reload list'),
+			'currentPageID' => $post_id
+		));
 
 
 		// register styles
@@ -183,7 +194,7 @@ class WpJumpMenu
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-widget' );
-//		wp_enqueue_script( 'wpjm-jquery-functions' );
+		wp_enqueue_script( 'wpjm-admin-js' );
 
 	}
 
@@ -364,6 +375,8 @@ class WpJumpMenu
 
 	function wpjm_js() {
 
+		wp_enqueue_script( 'wpjm-main-js' );
+
 		if (isset($this->options['useChosen']) && $this->options['useChosen'] == 'true') {
 			wp_enqueue_script( 'chosenjs' );
 			if ($this->options['position'] == 'wpAdminBar') {
@@ -392,29 +405,12 @@ class WpJumpMenu
 		if (is_admin_bar_showing())
 		{
 
-			//$html = '<span class="wpjm-logo-title">'.$this->options['title'].'</span>';
-			$html = '';
-      ob_start();
-      ?>
-      <script>
-        jQuery(document).ready(function() {
-          wpjm_init_html({
-            baseUrl: '<?=admin_url( 'admin-ajax.php' )?>',
-            useChosen: <?=isset( $this->options['useChosen'] ) && $this->options['useChosen'] == 'true'?>,
-            position: '<?=esc_js($this->options['position'])?>',
-            reloadText: '<?=__('Reload list')?>'
-          });
-        });
-      </script>
-<?php
-      $html .= ob_get_clean();
-
 			$wp_admin_bar->add_menu( array(
 				'id' 		 	=> 'wp-jump-menu',
 				'parent' 	=> 'top-secondary',
 				'title' 	=> $this->options['title'],
 				'meta'		=> array(
-					'html' => $html
+					'html' => ''
 				)
 			));
 
