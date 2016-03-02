@@ -196,6 +196,12 @@ class WpJumpMenu
 		wp_enqueue_script( 'jquery-ui-widget' );
 		wp_enqueue_script( 'wpjm-admin-js' );
 
+		?>
+		<script>
+			// DOES THIS SHOW UP?
+		</script>
+		<?php
+
 	}
 
 	function wpjm_settings_scripts()
@@ -350,6 +356,7 @@ class WpJumpMenu
 			float: " . (isset($this->options['chosenTextAlign']) && $this->options['chosenTextAlign'] != "right" ? "right" : 'none') . " !important;
 		}
 		#wp-admin-bar-wp-jump-menu .chosen-container { vertical-align: middle; }
+		#wp-admin-bar-wp-jump-menu span.loader { display: inline-block; width: 32px; height: 32px; background: transparent url(" . $this->dir . "/assets/images/ajax-loader.gif) no-repeat center center; }
 		";
 
 
@@ -410,20 +417,21 @@ class WpJumpMenu
 				'parent' 	=> 'top-secondary',
 				'title' 	=> $this->options['title'],
 				'meta'		=> array(
-					'html' => ''
+					'html' => '<span class="loader"></span>'
 				)
 			));
 
 	  }
 	}
 
-  function wpjm_menu() {
-    echo $this->wpjm_page_dropdown();
-    if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
-      wp_die();
-    else
-      die;
-  }
+	function wpjm_menu() {
+		echo $this->wpjm_page_dropdown();
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+		  wp_die();
+		else
+		  die;
+	}
+
 
 
 	/*

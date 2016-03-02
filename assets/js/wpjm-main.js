@@ -12,6 +12,7 @@ var WPJM = function(){
         console.log('wpjm render');
         var opts = self.wpjm_get_opts();
         var $parent = jQuery(WPJM_PARENT_ID);
+        $parent.find('.loader').hide();
         $parent.append(html);
         var $el = jQuery('#wp-pdd').on('change', function () {
             if (this.value === '__reload__') {
@@ -39,7 +40,7 @@ var WPJM = function(){
     this.wpjm_load = function() {
         console.log('wpjm_load');
         // remove old stuff if it's there
-        jQuery(WPJM_PARENT_ID).children('*:not(script):not(.ab-item)').remove();
+        jQuery(WPJM_PARENT_ID).children('*:not(script):not(.ab-item, .loader)').remove();
         // load new
         jQuery.get(self.wpjm_get_opts().baseUrl + '?action=wpjm_menu', function (html) {
             if (window.localStorage) {
