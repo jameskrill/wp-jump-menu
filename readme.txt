@@ -5,8 +5,8 @@ Plugin URI: http://wpjumpmenu.com
 Author URI: http://krillwebdesign.com
 Tags: posts, pages, admin, jump, menu, quick, links, custom post types
 Requires at least: 3.2.1
-Tested up to: 4.2.3
-Stable tag: 3.4.3
+Tested up to: 4.4.2
+Stable tag: 3.5
 
 Creates a drop-down menu in the admin area which makes it easy to jump to a page, post, custom post type or media file for editing.
 
@@ -109,6 +109,10 @@ The branding options are only accessible when the position of the jump menu is s
 3. The Jump Menu - Just a drop down, but one POWERFUL drop down!
 
 == Changelog ==
+= 3.5 =
+* Ajax loading of menu to improve load time of large sites
+* Cached menu for increased performance.
+
 = 3.4.3 =
 * Minor bug fixes.
 
@@ -267,7 +271,7 @@ The branding options are only accessible when the position of the jump menu is s
 * Bug fixed: Order By was not working because the orderby value names had not been updated to exclude "post-".  Thanks Tim for the bug report.
 
 = 2.2.2 =
-* Minor fix to jqueryfunctions.js
+* Minor fix to wpjm-main.js
 
 = 2.2.1 =
 * Forgot to add default value for "number of posts" to show when updating or installing for the first time.  Post types had to be saved the first time to get the list to show up correctly.

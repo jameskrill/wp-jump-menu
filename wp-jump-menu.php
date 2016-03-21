@@ -8,7 +8,7 @@
 Plugin Name: WP Jump Menu
 Plugin URI: http://wpjumpmenu.com
 Description: Creates a drop-down menu (jump menu) in a bar across the top or bottom of the screen that makes it easy to jump right to a page, post, or custom post type in the admin area to edit.
-Version: 3.4.3
+Version: 3.5
 Author: Jim Krill
 Author URI: http://krillwebdesign.com
 License: GPL
@@ -39,7 +39,7 @@ class WpJumpMenu
 		// vars
 		$this->path = plugin_dir_path( __FILE__ );
 		$this->dir = plugins_url( '', __FILE__ );
-		$this->version = '3.4.3';
+		$this->version = '3.5';
 		$this->upgrade_version = '';
 		$this->options = get_option( 'wpjm_options' );
 
@@ -80,6 +80,11 @@ class WpJumpMenu
 		}
 
 		// actions
+
+		// Clear LocalStorage on save
+		add_action( 'save_post', array( $this, 'clear_local_storage' ));
+		add_action( 'admin_footer', array( $this, 'refresh_local_storage'));
+
 		if ( current_user_can('manage_options')) {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		}
@@ -102,6 +107,11 @@ class WpJumpMenu
 			add_action('wp_print_styles', array( $this, 'wpjm_css'));
 		}
 
+		// Ajax menu
+        add_action( 'wp_ajax_wpjm_menu', array( $this, 'wpjm_menu' ));
+
+
+
 		// Options page settings form
 		add_action( 'admin_init', 'wpjm_admin_init' );
 
@@ -111,7 +121,8 @@ class WpJumpMenu
 
 		// register scripts
 		$scripts = array(
-			'wpjm-jquery-functions' => $this->dir . '/assets/js/jqueryfunctions.js',
+			'wpjm-admin-js' => $this->dir . '/assets/js/wpjm-admin.js',
+			'wpjm-main-js' => $this->dir . '/assets/js/wpjm-main.js',
 			'wpjm-jquery-colorpicker' => $this->dir . '/assets/js/colorpicker/js/colorpicker.js',
 			'chosenjs' => $this->dir . '/assets/js/chosen/custom.chosen.jquery.js'
 		);
@@ -120,6 +131,18 @@ class WpJumpMenu
 		{
 			wp_register_script( $k, $v, array('jquery'), $this->version );
 		}
+
+		// localize main script
+		global $post;
+		$post_id = isset($_GET['post']) ? $_GET['post'] : 0;
+		$post_id = isset($_GET['page_id']) ? $_GET['page_id'] : $post_id;
+		wp_localize_script( 'wpjm-main-js', 'wpjm_opt', array(
+			'baseUrl' => admin_url( 'admin-ajax.php' ),
+            'useChosen' => isset( $this->options['useChosen'] ) && $this->options['useChosen'] == 'true',
+			'position' => esc_js($this->options['position']),
+			'reloadText' => __('Reload list'),
+			'currentPageID' => $post_id
+		));
 
 
 		// register styles
@@ -146,6 +169,34 @@ class WpJumpMenu
 		}
 
 
+	}
+
+	/**
+	 * clear_local_storage
+	 *
+	 * @descrtiption: sets a wp option to set a mark that we need to clear localstorage
+	 * @since 3.5
+	 * @created: 03/20/2016
+	 */
+	function clear_local_storage()
+	{
+		update_option('wpjm-needs-refresh', 1);
+	}
+
+	/**
+	 * refresh_local_storage
+	 *
+	 * @description: clears localstorage by running wpjm.wpjm_load();
+	 * @since 3.5
+	 * @created: 03/20/2016
+	 */
+	function refresh_local_storage()
+	{
+		$needs_refresh = get_option('wpjm-needs-refresh');
+		if ($needs_refresh == 1) {
+			echo '<script>jQuery(document).ready(function(){wpjm.wpjm_load(); console.log("refreshed.");});</script>';
+		}
+		delete_option('wpjm-needs-refresh');
 	}
 
 
@@ -178,7 +229,7 @@ class WpJumpMenu
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-widget' );
-		wp_enqueue_script( 'wpjm-jquery-functions' );
+		wp_enqueue_script( 'wpjm-admin-js' );
 
 	}
 
@@ -334,6 +385,7 @@ class WpJumpMenu
 			float: " . (isset($this->options['chosenTextAlign']) && $this->options['chosenTextAlign'] != "right" ? "right" : 'none') . " !important;
 		}
 		#wp-admin-bar-wp-jump-menu .chosen-container { vertical-align: middle; }
+		#wp-admin-bar-wp-jump-menu span.loader { display: inline-block; width: 32px; height: 32px; background: transparent url(" . $this->dir . "/assets/images/ajax-loader.gif) no-repeat center center; }
 		";
 
 
@@ -358,6 +410,8 @@ class WpJumpMenu
 	*/
 
 	function wpjm_js() {
+
+		wp_enqueue_script( 'wpjm-main-js' );
 
 		if (isset($this->options['useChosen']) && $this->options['useChosen'] == 'true') {
 			wp_enqueue_script( 'chosenjs' );
@@ -386,52 +440,26 @@ class WpJumpMenu
 
 		if (is_admin_bar_showing())
 		{
-
-			//$html = '<span class="wpjm-logo-title">'.$this->options['title'].'</span>';
-			$html = $this->wpjm_page_dropdown();
-			$html .= "<script>
-			jQuery(document).ready(function($){";
-
-			if ( isset( $this->options['showID']) && $this->options['showID'] == "true" ) {
-				if ( isset( $this->options['useChosen'] ) && $this->options['useChosen'] == 'true') {
-					// $html .= "jQuery('#wp-pdd').on('chosen:showing_dropdown', function(){
-					// 	console.log('ready');
-					// 	console.log(jQuery('#wp_pdd_chosen'));
-					// 	jQuery('#wp_pdd_chosen').find('[data-post-id]').each(function(i){
-					// 		jQuery(this).append(' <span class=\"post-id\" style=\"float: right;\">' + this.dataset.postId + '</span>');
-					// 	});
-					// });";
-				} else {
-					$html .= "jQuery('#wp-pdd').find('option').each(function(i){
-						if (this.dataset.postId) {
-							jQuery(this).append(' (' + this.dataset.postId + ') ');
-						}
-					});";
-				}
-			}
-
-			$html .= "jQuery('#wp-pdd').on('change',function() {
-						window.location = this.value;
-					})";
-			if ( isset( $this->options['useChosen'] ) && $this->options['useChosen'] == 'true') {
-				$html .= ".customChosen({position:'".esc_js($this->options['position'])."', search_contains: true})";
-			}
-				$html .= ";";
-			$html .= "});";
-
-			$html .= "</script>";
-
 			$wp_admin_bar->add_menu( array(
 				'id' 		 	=> 'wp-jump-menu',
 				'parent' 	=> 'top-secondary',
 				'title' 	=> $this->options['title'],
 				'meta'		=> array(
-					'html' => $html
+					'html' => '<span class="loader"></span>'
 				)
 			));
 
 	  }
 	}
+
+	function wpjm_menu() {
+		echo $this->wpjm_page_dropdown();
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+		  wp_die();
+		else
+		  die;
+	}
+
 
 
 	/*
