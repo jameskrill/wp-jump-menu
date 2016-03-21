@@ -38,7 +38,7 @@ var WPJM = function(){
     };
 
     this.wpjm_load = function() {
-        console.log('wpjm_load');
+        
         // remove old stuff if it's there
         jQuery(WPJM_PARENT_ID).children('*:not(script):not(.ab-item, .loader)').remove();
         // load new
