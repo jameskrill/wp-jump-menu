@@ -9,7 +9,6 @@ var WPJM = function(){
     };
 
     this.wpjm_render = function(html) {
-        console.log('wpjm render');
         var opts = self.wpjm_get_opts();
         var $parent = jQuery(WPJM_PARENT_ID);
         $parent.find('.loader').hide();
@@ -27,10 +26,8 @@ var WPJM = function(){
         }
         if (opts.useChosen) {
             $el.customChosen({position: opts.position, search_contains: true});
-            console.log(opts.currentPageID);
             if(opts.currentPageID) {
                 var $option = $el.find('[data-post-id='+opts.currentPageID+']');
-                console.log($option);
                 $el.find('[data-post-id='+opts.currentPageID+']').prop( "selected", true );
                 $el.trigger('chosen:updated');
             }
@@ -38,7 +35,7 @@ var WPJM = function(){
     };
 
     this.wpjm_load = function() {
-        
+
         // remove old stuff if it's there
         jQuery(WPJM_PARENT_ID).children('*:not(script):not(.ab-item, .loader)').remove();
         // load new
@@ -56,7 +53,6 @@ var WPJM = function(){
 
         var cached = window.localStorage && window.localStorage.getItem(CACHE_KEY);
         if (cached) {
-            console.log('cached');
             self.wpjm_render(cached);
         } else {
             self.wpjm_load();

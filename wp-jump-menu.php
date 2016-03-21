@@ -80,6 +80,11 @@ class WpJumpMenu
 		}
 
 		// actions
+
+		// Clear LocalStorage on save
+		add_action( 'save_post', array( $this, 'clear_local_storage' ));
+		add_action( 'admin_footer', array( $this, 'refresh_local_storage'));
+
 		if ( current_user_can('manage_options')) {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		}
@@ -104,6 +109,8 @@ class WpJumpMenu
 
 		// Ajax menu
         add_action( 'wp_ajax_wpjm_menu', array( $this, 'wpjm_menu' ));
+
+
 
 		// Options page settings form
 		add_action( 'admin_init', 'wpjm_admin_init' );
@@ -164,6 +171,34 @@ class WpJumpMenu
 
 	}
 
+	/**
+	 * clear_local_storage
+	 *
+	 * @descrtiption: sets a wp option to set a mark that we need to clear localstorage
+	 * @since 3.5
+	 * @created: 03/20/2016
+	 */
+	function clear_local_storage()
+	{
+		update_option('wpjm-needs-refresh', 1);
+	}
+
+	/**
+	 * refresh_local_storage
+	 *
+	 * @description: clears localstorage by running wpjm.wpjm_load();
+	 * @since 3.5
+	 * @created: 03/20/2016
+	 */
+	function refresh_local_storage()
+	{
+		$needs_refresh = get_option('wpjm-needs-refresh');
+		if ($needs_refresh == 1) {
+			echo '<script>jQuery(document).ready(function(){wpjm.wpjm_load(); console.log("refreshed.");});</script>';
+		}
+		delete_option('wpjm-needs-refresh');
+	}
+
 
 	/*
 	*  admin_menu
@@ -195,12 +230,6 @@ class WpJumpMenu
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-widget' );
 		wp_enqueue_script( 'wpjm-admin-js' );
-
-		?>
-		<script>
-			// DOES THIS SHOW UP?
-		</script>
-		<?php
 
 	}
 
@@ -411,7 +440,6 @@ class WpJumpMenu
 
 		if (is_admin_bar_showing())
 		{
-
 			$wp_admin_bar->add_menu( array(
 				'id' 		 	=> 'wp-jump-menu',
 				'parent' 	=> 'top-secondary',
