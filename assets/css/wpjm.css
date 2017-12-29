@@ -1,0 +1,47 @@
+#wp-admin-bar-wp-jump-menu { height: 28px !important; }
+#wp-admin-bar-wp-jump-menu div.ab-item { float: left; }
+#wpadminbar #wp-pdd, #wpadminbar #wp-pdd * { color: #333 !important; text-shadow: none;}
+#wpadminbar span.wpjm-logo-title { padding-right: 10px; }
+@media only screen and (max-width: 1000px) {
+  #wpadminbar #wp-admin-bar-wp-jump-menu div.ab-item { display: none; }
+
+}
+@media only screen and (max-width: 850px) {
+  /*#wpadminbar #wp-admin-bar-wp-jump-menu div.chosen-container { width: 100% !important; }*/
+}
+@media only screen and (max-width: 782px) {
+  #wpadminbar #wp-admin-bar-wp-jump-menu { display: block; line-height: 46px; }
+}
+@media only screen and (max-width: 640px) {
+  #wpadminbar #wp-admin-bar-wp-jump-menu .chosen-single { width: 16px; }
+  #wpadminbar #wp-admin-bar-wp-jump-menu .chosen-single span { display: none; }
+}
+@media only screen and (max-width: 320px) {
+  #wpadminbar #wp-admin-bar-wp-jump-menu { display: none; }
+}
+#wpadminbar #wp-jump-menu { padding: 0px 10px; }
+
+
+#jump_menu { position: fixed; right: 0; height: 40px; width: 100%; z-index: 1500; }
+#jump_menu p { padding: 5px 15px; font-size: 12px; margin: 0; }
+#jump_menu p a:link, #jump_menu p a:visited, #jump_menu p a:hover { text-decoration: none; }
+#jump_menu p.wpjm_need_help { float: right; }
+#jump_menu p.wpjm_need_help span.wpjm-logo-title { font-family: Georgia; font-style: italic; padding-right: 10px; }
+#jump_menu p.jm_credits { font-style: italic; padding-top: 10px; line-height: 13px; }
+#jump_menu p.jm_credits img.wpjm_logo { height: auto; max-height: 25px; vertical-align: middle; margin-right: 10px; }
+#jump_menu_clear { height: 30px; }
+#jump_menu .chosen-container .post-id {}
+@media only screen and (max-width: 768px) {
+  #jump_menu .jm_credits { display: none; }
+}
+@media only screen and (max-width: 480px) {
+  #jump_menu span.wpjm-logo-title { display: none; }
+}
+
+#wp-pdd { max-width: 400px;  }
+#wp-admin-bar-wp-jump-menu .chosen-container { vertical-align: middle; }
+#wp-admin-bar-wp-jump-menu span.loader {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+}

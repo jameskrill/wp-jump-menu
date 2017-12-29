@@ -1,4 +1,5 @@
 <?php
+
 // Custom Walker Class to walk through the page/custom post type hierarchy tree
 class WPJM_Walker_PageDropDown extends Walker_PageDropDown {
 
@@ -6,10 +7,10 @@ class WPJM_Walker_PageDropDown extends Walker_PageDropDown {
 
 	function start_el(&$output, $page, $depth = 0, $args = array(), $id = 0) {
 
-		global $current_user, $post;
+		global $current_user, $post, $post_id, $options;
 
 		// Get options to determine whether or not to show ID
-		$options = get_option( 'wpjm_options' );
+//		$options = get_option( 'wpjm_options' );
 
 		$status_color = array(
 		'publish' => (!empty($options['statusColors']['publish'])?'#'.$options['statusColors']['publish']:'#000000'),
@@ -26,8 +27,11 @@ class WPJM_Walker_PageDropDown extends Walker_PageDropDown {
 
 		$editLink = (is_admin() || (!isset($options['frontEndJump']) || !$options['frontEndJump']) ? get_edit_post_link($page->ID) : get_permalink($page->ID));
 		$output .= "\t<option data-permalink=\"".get_permalink($page->ID)."\" class=\"level-$depth\" value=\"".$editLink."\"";
-		if ( (isset($_GET['post']) && ($page->ID == $_GET['post'])) || (isset($post) && ($page->ID == $post->ID)) )
-			$output .= ' selected="selected"';
+		if ( (isset($options['showPostType']) && $options['showPostType'] == true ) ) {
+			$output .= "data-post-type=\"".get_post_type($page->ID)."\"";
+		}
+//		if ( (isset($_GET['post']) && ($page->ID == $_GET['post'])) || (isset($post_id) && ($page->ID == $post_id)) )
+//			$output .= ' selected="selected"';
 
 		$post_type_object = get_post_type_object( $args['post_type'] );
 

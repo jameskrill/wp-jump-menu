@@ -29,10 +29,17 @@
   /*left: 0;*/
   left: auto;
   right: 0;
-  width: 100%;
+  width: auto !important;
   min-width: 320px;
-  max-width: 500px;
+  max-width: 700px;
 }
+
+@media only screen and (max-width: 700px) {
+  #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container.chosen-with-drop .chosen-drop {
+    width: 100% !important;
+  }
+}
+
 #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container a {
   cursor: pointer;
 }
@@ -64,12 +71,16 @@
 #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container-single .chosen-default {
   color: #999;
 }
-#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container-single .chosen-single span {
+#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container-single .chosen-single>span {
   display: block;
   overflow: hidden;
   margin-right: 26px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container-single .chosen-single span.post-type,
+#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container-single .chosen-single span.post-id {
+  display: none;
 }
 #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container-single .chosen-single-with-deselect span {
   margin-right: 38px;
@@ -157,7 +168,7 @@
   margin: 0;
   padding: 5px 6px;
   list-style: none;
-  line-height: 15px;
+  /*line-height: 15px;*/
   -webkit-touch-callout: none;
 }
 #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li.active-result {
@@ -185,11 +196,16 @@
   background: #f4f4f4;
 }
 #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li.group-result {
+  background-color: #333 !important;
+  color: #fff;
   display: list-item;
   font-weight: bold;
   cursor: default;
 }
 #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li.group-option {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
   padding-left: 15px;
 }
 #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li em {
@@ -197,10 +213,30 @@
   text-decoration: underline;
   color: inherit;
 }
-#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li span.post-id {
+#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li span.post-id,
+#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li span.post-type
+{
   font-size: 12px;
-  line-height: 15px;
+  /*line-height: 24px;*/
   color: #aaa !important;
+}
+#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li span.post-type {
+  margin-right: 15px;
+  /*width: 40px;*/
+}
+#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li span.post-title {
+  color: inherit;
+  flex-grow: 1;
+  white-space: nowrap;
+  display: block;
+  /*max-width: 250px;*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li span.post-id {
+  margin-left: 15px;
+  /*width: 50px;*/
+  text-align: right !important;
 }
 #wpadminbar #wp-admin-bar-top-secondary #wp-admin-bar-wp-jump-menu .chosen-container .chosen-results li.highlighted em,
 #jump_menu .chosen-container li.highlighted em {
