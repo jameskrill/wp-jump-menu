@@ -11,9 +11,9 @@ Copyright: Jim Krill
 Text Domain: wp-jump-menu
 */
 
-if (! function_exists('add_action' ) ) {
-  echo 'Access Denied.';
-  exit;
+if ( ! function_exists( 'add_action' ) ) {
+	echo 'Access Denied.';
+	exit;
 }
 
 define( 'WPJM_VERSION', '3.6.2' );
@@ -36,16 +36,13 @@ load_plugin_textdomain( 'wp-jump-menu', false, basename( dirname( __FILE__ ) ) .
 if ( ! is_network_admin() ) {
 	if ( function_exists( 'current_user_can' ) ) {
 
-	  // load wpjm
+		// load wpjm
 		add_action( 'init', array( 'WPJM', 'init' ) );
 
 		// load settings page in admin pages
 		if ( is_admin() ) {
-		  require_once( WPJM__PLUGIN_DIR . 'lib/class-wpjm-admin.php' );
-			add_action( 'init', array( 'WPJM_Admin', 'init') );
-    }
-
+			require_once( WPJM__PLUGIN_DIR . 'lib/class-wpjm-admin.php' );
+			add_action( 'init', array( 'WPJM_Admin', 'init' ) );
+		}
 	}
 }
-
-?>

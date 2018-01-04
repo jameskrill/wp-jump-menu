@@ -42,7 +42,7 @@ class WPJM {
 	}
 
 	private static function init_hooks() {
-		self::$initiated    = true;
+		self::$initiated = true;
 
 		// Clear cache when things are changed
 		// Clear LocalStorage on save
@@ -56,7 +56,7 @@ class WPJM {
 
 		// insert action links under plugin name on wp plugins page
 		add_action( 'plugin_action_links', array( 'WPJM', 'plugin_action_links' ), 10, 2 );
-		
+
 		// Load Scripts
 
 		// load scripts on both front-end and back-end
@@ -84,79 +84,81 @@ class WPJM {
 
 		// Load menu using ajax request
 		add_action( 'wp_ajax_wpjm_menu', array( 'WPJM', 'wpjm_menu' ) );
-  }
+	}
 
-  private static function init_scripts() {
-	  // register scripts
-	  $scripts = array(
-		  'wpjm-admin-js'           => WPJM__PLUGIN_URL . '/assets/js/wpjm-admin.js',
-		  'wpjm-main-js'            => WPJM__PLUGIN_URL . '/assets/js/wpjm-main.js',
-		  'wpjm-chosenjs'           => WPJM__PLUGIN_URL . '/assets/js/chosen/custom.chosen.jquery.js',
-		  'wpjm-jquery-hotkeys'     => WPJM__PLUGIN_URL . '/assets/js/jquery/jquery.hotkeys.js'
-	  );
-	  self::register_scripts( $scripts );
+	private static function init_scripts() {
+		// register scripts
+		$scripts = array(
+			'wpjm-admin-js'       => WPJM__PLUGIN_URL . '/assets/js/wpjm-admin.js',
+			'wpjm-main-js'        => WPJM__PLUGIN_URL . '/assets/js/wpjm-main.js',
+			'wpjm-chosenjs'       => WPJM__PLUGIN_URL . '/assets/js/chosen/custom.chosen.jquery.js',
+			'wpjm-jquery-hotkeys' => WPJM__PLUGIN_URL . '/assets/js/jquery/jquery.hotkeys.js'
+		);
+		self::register_scripts( $scripts );
 
-	  // localize main script
-	  $post_id = isset( $_GET['post'] ) ? $_GET['post'] : 0;
-	  $post_id = isset( $_GET['page_id'] ) ? $_GET['page_id'] : $post_id;
-	  $post_id = isset( $_GET['attachment_id'] ) ? $_GET['attachment_id'] : $post_id;
-	  $post_id = isset( $_GET['p'] ) ? $_GET['p'] : $post_id;
-	  wp_localize_script( 'wpjm-main-js', 'wpjm_opt', array(
-		  'baseUrl'       => admin_url( 'admin-ajax.php' ),
-		  'useChosen'     => isset( self::$options['useChosen'] ) && self::$options['useChosen'] == 'true',
-		  'position'      => esc_js( self::$options['position'] ),
-		  'reloadText'    => __( 'Refresh Jump Menu' ),
-		  'currentPageID' => $post_id,
-		  'useShortcut'   => isset( self::$options['useShortcut'] ) && self::$options['useShortcut'] == 'true',
-		  'isAdmin'       => is_admin()
-	  ) );
+		// localize main script
+		$post_id = isset( $_GET['post'] ) ? $_GET['post'] : 0;
+		$post_id = isset( $_GET['page_id'] ) ? $_GET['page_id'] : $post_id;
+		$post_id = isset( $_GET['attachment_id'] ) ? $_GET['attachment_id'] : $post_id;
+		$post_id = isset( $_GET['p'] ) ? $_GET['p'] : $post_id;
+		wp_localize_script( 'wpjm-main-js', 'wpjm_opt', array(
+			'baseUrl'       => admin_url( 'admin-ajax.php' ),
+			'useChosen'     => isset( self::$options['useChosen'] ) && self::$options['useChosen'] == 'true',
+			'position'      => esc_js( self::$options['position'] ),
+			'reloadText'    => __( 'Refresh Jump Menu' ),
+			'currentPageID' => $post_id,
+			'useShortcut'   => isset( self::$options['useShortcut'] ) && self::$options['useShortcut'] == 'true',
+			'isAdmin'       => is_admin()
+		) );
 
-	  // register styles
-	  $styles = array(
-		  'chosencss'            => WPJM__PLUGIN_URL . '/assets/js/chosen/chosen.css',
-		  'chosencss-wpadminbar' => WPJM__PLUGIN_URL . '/assets/js/chosen/chosen-wpadmin.css',
-		  'wpjm-css'             => WPJM__PLUGIN_URL . '/assets/css/wpjm.css'
-	  );
-	  self::register_styles( $styles );
-  }
+		// register styles
+		$styles = array(
+			'chosencss'            => WPJM__PLUGIN_URL . '/assets/js/chosen/chosen.css',
+			'chosencss-wpadminbar' => WPJM__PLUGIN_URL . '/assets/js/chosen/chosen-wpadmin.css',
+			'wpjm-css'             => WPJM__PLUGIN_URL . '/assets/css/wpjm.css'
+		);
+		self::register_styles( $styles );
+	}
 
 	/**
-   * loop through array of scripts and register them
-   *
+	 * loop through array of scripts and register them
+	 *
 	 * @param $scripts array(slug => url)
 	 *
 	 * @return array|bool
 	 */
-  public static function register_scripts( $scripts ) {
-	  if ( empty($scripts) || gettype($scripts) != "array")
-	    return false;
+	public static function register_scripts( $scripts ) {
+		if ( empty( $scripts ) || gettype( $scripts ) != "array" ) {
+			return false;
+		}
 
-	  $scripts_registered = array();
-	  foreach ( $scripts as $k => $v ) {
-		  $scripts_registered[] = wp_register_script( $k, $v, array( 'jquery' ), WPJM_VERSION, true );
-	  }
+		$scripts_registered = array();
+		foreach ( $scripts as $k => $v ) {
+			$scripts_registered[] = wp_register_script( $k, $v, array( 'jquery' ), WPJM_VERSION, true );
+		}
 
-	  return $scripts_registered;
-  }
+		return $scripts_registered;
+	}
 
 	/**
-   * loop through array of styles and register them
-   *
+	 * loop through array of styles and register them
+	 *
 	 * @param $styles array(slug => url)
 	 *
 	 * @return array|bool
 	 */
-  public static function register_styles( $styles ) {
-	  if ( empty($styles) || gettype($styles) != "array")
-	    return false;
+	public static function register_styles( $styles ) {
+		if ( empty( $styles ) || gettype( $styles ) != "array" ) {
+			return false;
+		}
 
-	  $styles_registered = array();
-	  foreach ( $styles as $k => $v ) {
-		  $styles_registered[] = wp_register_style( $k, $v, false, WPJM_VERSION );
-	  }
+		$styles_registered = array();
+		foreach ( $styles as $k => $v ) {
+			$styles_registered[] = wp_register_style( $k, $v, false, WPJM_VERSION );
+		}
 
-	  return $styles_registered;
-  }
+		return $styles_registered;
+	}
 
 	/**
 	 * clear_local_storage
@@ -298,9 +300,6 @@ class WPJM {
 		}
 
 	}
-
-
-
 
 
 	/**
