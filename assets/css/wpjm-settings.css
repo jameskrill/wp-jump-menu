@@ -1,0 +1,15 @@
+/* wpjm-settings.css */
+.form-table .widefat th,
+.form-table .widefat td {
+    padding: 8px 10px;
+}
+
+.wpjm-post-types-wrapper .form-table th:not(.check-column) {
+    width: auto;
+}
+.wpjm-post-types-wrapper .form-table > tbody > tr > th {
+    display: none;
+}
+.wpjm-post-types-wrapper .form-table > tbody > tr > td {
+    padding: 0;
+}
