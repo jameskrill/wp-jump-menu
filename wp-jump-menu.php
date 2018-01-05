@@ -28,6 +28,8 @@ register_activation_hook( __FILE__, array( 'WPJM', 'plugin_activation' ) );
 
 // require classes
 require_once( WPJM__PLUGIN_DIR . 'lib/class-wpjm.php' );
+require_once( WPJM__PLUGIN_DIR . 'lib/class-wpjm-menu.php' );
+require_once( WPJM__PLUGIN_DIR . 'lib/class-wpjm-select-menu.php' );
 
 // set text domain
 load_plugin_textdomain( 'wp-jump-menu', false, basename( dirname( __FILE__ ) ) . '/languages' );

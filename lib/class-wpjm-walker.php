@@ -26,7 +26,7 @@ class WPJM_Walker_PageDropDown extends Walker_PageDropDown {
 		$pad = str_repeat(' &#8212;', $depth * 1);
 
 		$editLink = (is_admin() || (!isset($options['frontEndJump']) || !$options['frontEndJump']) ? get_edit_post_link($page->ID) : get_permalink($page->ID));
-		$output .= "\t<option data-permalink=\"".get_permalink($page->ID)."\" class=\"level-$depth\" value=\"".$editLink."\"";
+		$output .= "\t<option data-permalink=\"".get_permalink($page->ID)."\" data-post-id=\"".$page->ID."\" class=\"level-$depth\" value=\"".$editLink."\"";
 		if ( (isset($options['showPostType']) && $options['showPostType'] == true ) ) {
 			$output .= "data-post-type=\"".get_post_type($page->ID)."\"";
 		}
@@ -41,7 +41,7 @@ class WPJM_Walker_PageDropDown extends Walker_PageDropDown {
 			$output .= ' style="color: '.$status_color['publish'].';"';
 			// If the setting to show ID's is true, show the ID in ()
 			if ( (isset($options['showID']) && $options['showID'] == true) ) {
-				$output .= ' data-post-id="'.$page->ID.'"';
+				$output .= ' data-show-post-id="true"';
 			}
 		$output .= '>';
 		$title = apply_filters( 'list_pages', $page->post_title );
