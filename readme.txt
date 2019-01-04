@@ -109,6 +109,9 @@ The branding options are only accessible when the position of the jump menu is s
 3. The Jump Menu - Just a drop down, but one POWERFUL drop down!
 
 == Changelog ==
+= 3.6.2 =
+* fixed small jQuery compatibiity error with the media uploader
+
 = 3.6.1 =
 * Code clean up - added comments, for those interested in looking through the code.
 * Bug Fix: Transients were not reloading after attachments/media were uploaded/edited.
