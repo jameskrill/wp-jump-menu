@@ -36,7 +36,7 @@ class WpJumpMenu {
 		// vars
 		$this->path                     = plugin_dir_path( __FILE__ );
 		$this->dir                      = plugins_url( '', __FILE__ );
-		$this->version                  = '3.6.1';
+		$this->version                  = '3.6.3';
 		$this->upgrade_version          = '';
 		$this->options                  = get_option( 'wpjm_options' );
 		$this->menu_cache_label         = "wpjm_menu";

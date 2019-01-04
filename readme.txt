@@ -6,7 +6,7 @@ Author URI: http://krillwebdesign.com
 Tags: posts, pages, admin, jump, menu, quick, links, custom post types
 Requires at least: 3.7
 Tested up to: 4.9.1
-Stable tag: 3.6.1
+Stable tag: 3.6.3
 
 Creates a drop-down menu in the admin area which makes it easy to jump to a page, post, custom post type or media file for editing.
 
@@ -109,8 +109,11 @@ The branding options are only accessible when the position of the jump menu is s
 3. The Jump Menu - Just a drop down, but one POWERFUL drop down!
 
 == Changelog ==
-= 3.6.2 =
+= 3.6.3 =
 * fixed small jQuery compatibiity error with the media uploader
+
+= 3.6.2 =
+* Fixed a bug introduced in WP 4.9.8 where a loading spinner would only appear.
 
 = 3.6.1 =
 * Code clean up - added comments, for those interested in looking through the code.
